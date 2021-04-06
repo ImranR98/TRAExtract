@@ -1,0 +1,11 @@
+{
+  "name": "tra-extract",
+  "version": "1.0.0",
+  "description": "Extract TRA receipt information from a list of URLs of the form 'https://verify.tra.go.tz/<RECEIPT_NUMBER>'",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Imran Remtulla",
+  "license": "ISC"
+}
