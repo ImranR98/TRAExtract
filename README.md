@@ -10,4 +10,10 @@ Use the TRAScan mobile app to scan receipt QR codes and generate the list of URL
 
 ## Usage
 
-> TODO.
+This is a command line application that requires Node.js.
+
+Run the app and provide the path to the input file, and the path to a directory in which to store output files like so:
+
+```bash
+node app.js <path to input file> <path to output folder>
+```
