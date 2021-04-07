@@ -15,6 +15,7 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
+    icon: path.join(app.getAppPath(), 'icon/icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule: true
@@ -112,3 +113,5 @@ ipcMain.on('toMain', async (event, message) => {
       break;
   }
 })
+
+if(require('electron-squirrel-startup')) return;

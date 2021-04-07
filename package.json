@@ -1,13 +1,16 @@
 {
   "name": "tra-extract",
-  "productName": "tra-extract",
+  "productName": "TRAExtract",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Extract TRA receipt information from a list of URLs",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
+    "make-mac": "electron-forge make --platform darwin",
+    "make-deb": "electron-forge make --platform linux --targets deb",
+    "make-win": "electron-forge make --platform win32",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\""
   },
@@ -19,7 +22,9 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "./icon/icon"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
@@ -35,11 +40,15 @@
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
+          "config": {
+            "icon": "./icon/icon.png"
+          }
         },
         {
           "name": "@electron-forge/maker-rpm",
-          "config": {}
+          "config": {
+            "icon": "./icon/icon.png"
+          }
         }
       ]
     }
