@@ -1,3 +1,11 @@
+module.exports.extract = (file, folder) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve('This\nIs\nA\nPlaceholder.')
+        }, 5000)
+    })
+}
+
 // Dependencies
 const fs = require('fs')
 const https = require('https')
@@ -65,17 +73,21 @@ const extractTRAData = (rawhtml) => {
     return { recNo, recDate, total, vrn, name }
 }
 
-const run = async () => {
-    // Validate the required arguments
-    if (process.argv.length < 4) throw 'Please provide all required arguments.'
-    if (!fs.existsSync(process.argv[2])) throw 'Provided input file path is invalid.'
-    if (!fs.statSync(process.argv[2]).isFile()) throw 'Provided input file path does not point to a file.'
-    if (!fs.existsSync(process.argv[3])) throw 'Provided output folder path is invalid.'
-    if (!fs.statSync(process.argv[3]).isDirectory()) throw 'Provided output folder path does not point to a folder.'
+module.exports.extract = async (file, folder) => {
+    let logs = ''
+    const log = (data) => {
+        console.log(data)
+        logs += data + '\n'
+    }
+
+    if (!fs.existsSync(file)) throw 'Provided input file path is invalid.'
+    if (!fs.statSync(file).isFile()) throw 'Provided input file path does not point to a file.'
+    if (!fs.existsSync(folder)) throw 'Provided output folder path is invalid.'
+    if (!fs.statSync(folder).isDirectory()) throw 'Provided output folder path does not point to a folder.'
 
     // Parse the input file
-    const { validURLs, invalidLines } = parseRawTRAText(fs.readFileSync(process.argv[2]).toString())
-    console.log(`Found ${validURLs.length} valid '${baseURL}' URLs${invalidLines.length > 0 ? ` and ${invalidLines.length} invalid lines` : ``}.`)
+    const { validURLs, invalidLines } = parseRawTRAText(fs.readFileSync(file).toString())
+    log(`Found ${validURLs.length} valid '${baseURL}' URLs${invalidLines.length > 0 ? ` and ${invalidLines.length} invalid lines` : ``}.`)
 
     // Attempt to extract data for each valid URL
     const results = []
@@ -83,7 +95,7 @@ const run = async () => {
     for (let i = 0; i < validURLs.length; i++) {
         try {
             results.push({ url: validURLs[i], data: extractTRAData(await getHTML(validURLs[i])) })
-            console.log(`${i + 1} of ${validURLs.length}:\tExtracted data for ${validURLs[i]} ...`)
+            log(`${i + 1} of ${validURLs.length}:\tExtracted data for ${validURLs[i]} ...`)
         } catch (err) {
             if (typeof err === 'string') errors.push({ url: validURLs[i], error: err })
             else errors.push({ url: validURLs[i], error: err })
@@ -101,20 +113,15 @@ const run = async () => {
     const finalErrors = errors.map(error => {
         return `Error for '${error.url}':\n${typeof error.error === 'string' ? error.error : JSON.stringify(error.error)}\n`
     }).join('\n')
-    const fileName = basename(process.argv[2])
+    const fileName = basename(file)
     if (finalResults.length > 0) {
-        fs.writeFileSync(`${process.argv[3]}/Results-${fileName}.csv`, finalResults)
-        console.log(`Saved ${results.length} valid results into ${process.argv[3]}/Results-${fileName}.`)
+        fs.writeFileSync(`${folder}/Results-${fileName}.csv`, finalResults)
+        log(`Saved ${results.length} valid results into ${folder}/Results-${fileName}.`)
     }
     if (finalErrors.length > 0) {
-        fs.writeFileSync(`${process.argv[3]}/Errors-${fileName}`, finalErrors)
-        console.log(`Saved ${errors.length} error details into ${process.argv[3]}/Errors-${fileName}.`)
+        fs.writeFileSync(`${folder}/Errors-${fileName}`, finalErrors)
+        log(`Saved ${errors.length} error details into ${folder}/Errors-${fileName}.`)
     }
-}
 
-// Actual run
-run().catch(err => {
-    console.error(usage)
-    console.error(err)
-    exit(1)
-})
+    return logs
+}

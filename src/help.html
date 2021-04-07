@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>TRAExtract | Help</title>
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-between mb-3">
+            <h1 class="col">TRAExtract | Help</h1>
+            <small class="col-1 help"><a id="home" href="#">Home</a></small>
+        </div>
+        <h2>About</h2>
+        <p>Extract TRA receipt information from a list of URLs of the form
+            <code>https://verify.tra.go.tz/&lt;RECEIPT_NUMBER&gt;</code>.<br>
+            Use the <a href="#" id="trascan">TRAScan</a> mobile app to scan receipt QR codes and
+            generate the list of URLs.<br>
+        </p>
+        <h2>Usage</h2>
+        <p>
+            Pick an input file and an output directory, then press start to begin data extraction.<br>
+            Output is saved in a <code>.csv</code> file, and errors are saved in a <code>.txt</code> file.
+        </p>
+        <blockquote class="blockquote">Made for Papa</blockquote>
+    </div>
+
+    <script src="./bootstrap/bootstrap.min.js"></script>
+    <script src="./renderer_help.js"></script>
+</body>
+
+</html>

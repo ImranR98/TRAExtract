@@ -10,10 +10,6 @@ Use the [TRAScan](https://github.com/ImranR98/TRAScan) mobile app to scan receip
 
 ## Usage
 
-This is a command line application that requires Node.js.
+Pick an input file and an output directory, then press start to begin data extraction.
 
-Run the app and provide the path to the input file, and the path to a directory in which to store output files like so:
-
-```bash
-node app.js <path to input file> <path to output folder>
-```
+Output is saved in a `.csv` file, and errors are saved in a `.txt` file.

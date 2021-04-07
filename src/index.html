@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <title>TRAExtract</title>
+  <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row justify-content-between mb-3">
+      <h1 class="col">TRAExtract</h1>
+      <small class="col-1 help"><a id="help" href="#">Help</a></small>
+    </div>
+    <div class="row">
+      <div class="col-sm d-grid">
+        <button type="button" class="btn btn-dark mb-2" id="inputButton" data-item="">Browse</button>
+      </div>
+      <div class="col-sm-8 d-grid">
+        <div id="inputDiv" class="card px-2 nowrap mb-2">Pick input file</div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-sm d-grid">
+        <button type="button" class="btn btn-dark mb-2" id="outputButton" data-item="">Browse</button>
+      </div>
+      <div class="col-sm-8 d-grid">
+        <div id="outputDiv" class="card px-2 nowrap mb-2">Pick output folder</div>
+      </div>
+    </div>
+
+    <div class="d-grid mb-4">
+      <button type="button" class="btn btn-warning" id="startButton">Start</button>
+    </div>
+    <div class="d-grid">
+      <pre class="card p-2">
+        <b>Logs:</b>
+        <div id="logDiv"></div>
+      </pre>
+    </div>
+  </div>
+
+  <script src="./bootstrap/bootstrap.min.js"></script>
+  <script src="./renderer.js"></script>
+</body>
+
+</html>
