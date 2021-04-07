@@ -1,6 +1,5 @@
 {
   "name": "tra-extract",
-  "productName": "TRAExtract",
   "version": "1.0.0",
   "description": "Extract TRA receipt information from a list of URLs",
   "main": "src/index.js",
@@ -9,7 +8,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "make-mac": "electron-forge make --platform darwin",
-    "make-deb": "electron-forge make --platform linux --targets deb",
+    "make-deb": "electron-forge make --platform linux --targets @electron-forge/maker-deb",
     "make-win": "electron-forge make --platform win32",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\""
@@ -29,25 +28,31 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "tra_extract"
+            "name": "tra_extract",
+            "title": "TRAExtract"
           }
         },
         {
           "name": "@electron-forge/maker-zip",
           "platforms": [
             "darwin"
-          ]
+          ],
+          "config": {
+            "productName": "TRAExtract"
+          }
         },
         {
           "name": "@electron-forge/maker-deb",
           "config": {
-            "icon": "./icon/icon.png"
+            "icon": "./icon/icon.png",
+            "productName": "TRAExtract"
           }
         },
         {
           "name": "@electron-forge/maker-rpm",
           "config": {
-            "icon": "./icon/icon.png"
+            "icon": "./icon/icon.png",
+            "productName": "TRAExtract"
           }
         }
       ]

@@ -10,12 +10,10 @@ module.exports.extract = (file, folder) => {
 const fs = require('fs')
 const https = require('https')
 const { basename } = require('path')
-const { exit } = require('process')
 const url = require('url')
 
 // Constants
 const baseURL = 'verify.tra.go.tz'
-const usage = `Usage: ${basename(process.argv[0])} ${basename(process.argv[1])} <path to input file> <path to output folder>`
 
 // Parse the raw text from the input file and return valid and invalid URLs
 const parseRawTRAText = (data) => {
