@@ -18,7 +18,6 @@
     "name": "Imran Remtulla",
     "email": "iremtulla15@gmail.com"
   },
-  "license": "MIT",
   "config": {
     "forge": {
       "packagerConfig": {
@@ -28,8 +27,9 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "tra_extract",
-            "title": "TRAExtract"
+            "name": "TRAExtract",
+            "title": "TRAExtract",
+            "setupIcon": "./icon/icon.ico"
           }
         },
         {
