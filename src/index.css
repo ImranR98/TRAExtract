@@ -17,3 +17,11 @@ a {
 .help {
   text-align: end;
 }
+
+@media (prefers-color-scheme: dark) {
+  html, body, .card {
+    background-color: #202020;
+    color: white;
+    border-color: #444444;
+  }
+}
