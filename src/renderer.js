@@ -46,30 +46,30 @@ window.api.receive('fromMain', (message) => {
             inputDiv.innerHTML = message.data ? message.data : 'Pick input file'
             inputDiv.setAttribute('data-item', message.data)
             validate()
-            break;
+            break
         case 'SETOUTPUT':
             outputDiv.innerHTML = message.data ? message.data : 'Pick output folder '
             outputDiv.setAttribute('data-item', message.data)
             validate()
-            break;
+            break
         case 'ENABLE':
             startButton.removeAttribute('disabled')
             inputButton.removeAttribute('disabled')
             outputButton.removeAttribute('disabled')
             help.removeAttribute('disabled')
-            break;
+            break
         case 'DISABLE':
             startButton.setAttribute('disabled', 'true')
             inputButton.setAttribute('disabled', 'true')
             outputButton.setAttribute('disabled', 'true')
             help.setAttribute('disabled', 'true')
-            break;
+            break
         case 'LOG':
-            logDiv.innerHTML += now() + ':\n' + message.data + '\n\n'
-            break;
+            logDiv.innerHTML += now() + ': ' + message.data + '\n'
+            break
         default:
             console.error('Unrecognized message.')
             console.error(message)
-            break;
+            break
     }
 })

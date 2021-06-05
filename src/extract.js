@@ -1,11 +1,3 @@
-module.exports.extract = (file, folder) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve('This\nIs\nA\nPlaceholder.')
-        }, 5000)
-    })
-}
-
 // Dependencies
 const fs = require('fs')
 const https = require('https')
@@ -71,13 +63,7 @@ const extractTRAData = (rawhtml) => {
     return { recNo, recDate, total, vrn, name }
 }
 
-module.exports.extract = async (file, folder) => {
-    let logs = ''
-    const log = (data) => {
-        console.log(data)
-        logs += data + '\n'
-    }
-
+const extract = async (file, folder) => {
     if (!fs.existsSync(file)) throw 'Provided input file path is invalid.'
     if (!fs.statSync(file).isFile()) throw 'Provided input file path does not point to a file.'
     if (!fs.existsSync(folder)) throw 'Provided output folder path is invalid.'
@@ -85,7 +71,7 @@ module.exports.extract = async (file, folder) => {
 
     // Parse the input file
     const { validURLs, invalidLines } = parseRawTRAText(fs.readFileSync(file).toString())
-    log(`Found ${validURLs.length} valid '${baseURL}' URLs${invalidLines.length > 0 ? ` and ${invalidLines.length} invalid lines` : ``}.`)
+    console.log(`Found ${validURLs.length} valid '${baseURL}' URLs${invalidLines.length > 0 ? ` and ${invalidLines.length} invalid lines` : ``}.`)
 
     // Attempt to extract data for each valid URL
     const results = []
@@ -93,14 +79,13 @@ module.exports.extract = async (file, folder) => {
     for (let i = 0; i < validURLs.length; i++) {
         try {
             results.push({ url: validURLs[i], data: extractTRAData(await getHTML(validURLs[i])) })
-            log(`${i + 1} of ${validURLs.length}:\tExtracted data for ${validURLs[i]} ...`)
+            console.log(`${i + 1} of ${validURLs.length}:\tExtracted data for ${validURLs[i]} ...`)
         } catch (err) {
             if (typeof err === 'string') errors.push({ url: validURLs[i], error: err })
             else errors.push({ url: validURLs[i], error: err })
             console.error(`${i + 1} of ${validURLs.length}:\tFailed to extract data for ${validURLs[i]} ...`)
         }
     }
-
     // Prepare and save results and errors
     let finalResults = []
     finalResults.push(`COMPANY,VRN,RECEIPT,DATE,TOTAL`)
@@ -114,12 +99,17 @@ module.exports.extract = async (file, folder) => {
     const fileName = basename(file)
     if (finalResults.length > 0) {
         fs.writeFileSync(`${folder}/Results-${fileName}.csv`, finalResults)
-        log(`Saved ${results.length} valid results into ${folder}/Results-${fileName}.`)
+        console.log(`Saved ${results.length} valid results into ${folder}/Results-${fileName}.`)
     }
     if (finalErrors.length > 0) {
         fs.writeFileSync(`${folder}/Errors-${fileName}`, finalErrors)
-        log(`Saved ${errors.length} error details into ${folder}/Errors-${fileName}.`)
+        console.log(`Saved ${errors.length} error details into ${folder}/Errors-${fileName}.`)
     }
-
-    return logs
 }
+
+extract(process.argv[2], process.argv[3]).then(() => {
+    process.exit(0)
+}).catch(err => {
+    console.log(err)
+    process.exit(1)
+})
