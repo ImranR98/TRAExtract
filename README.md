@@ -12,4 +12,6 @@ Use the [TRAScan](https://github.com/ImranR98/TRAScan) mobile app to scan receip
 
 Pick an input file and an output directory, then press start to begin data extraction.
 
-Output is saved in a `.csv` file, and errors are saved in a `.txt` file.
+Output is saved in a `.csv` file.
+
+The log window shows extraction details, including any errors.

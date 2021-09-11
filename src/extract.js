@@ -10,14 +10,15 @@ const baseURL = 'verify.tra.go.tz'
 // Parse the raw text from the input file and return valid and invalid URLs
 const parseRawTRAText = (data) => {
     const lines = data.split('\n').map(line => line.trim())
-    const validURLs = [], invalidLines = []
-    lines.forEach(line => {
+    const allLines = []
+    lines.filter(line => (line.trim()).length > 0).forEach(line => {
         if (line.startsWith('http://' + baseURL) || line.startsWith('https://' + baseURL))
-            validURLs.push(line)
-        else
-            invalidLines.push(line)
+            allLines.push(line)
+        else {
+            allLines.push(`-${line}`)
+        }
     })
-    return { validURLs, invalidLines }
+    return allLines
 }
 
 // Grab the raw HTML from a URL
@@ -70,40 +71,44 @@ const extract = async (file, folder) => {
     if (!fs.statSync(folder).isDirectory()) throw 'Provided output folder path does not point to a folder.'
 
     // Parse the input file
-    const { validURLs, invalidLines } = parseRawTRAText(fs.readFileSync(file).toString())
-    console.log(`Found ${validURLs.length} valid '${baseURL}' URLs${invalidLines.length > 0 ? ` and ${invalidLines.length} invalid lines` : ``}.`)
+    const allLines = parseRawTRAText(fs.readFileSync(file).toString())
+    console.log(`Found ${allLines.length} lines, of which ${allLines.filter(line => !line.startsWith('-')).length} are valid '${baseURL}' URLs.`)
 
     // Attempt to extract data for each valid URL
     const results = []
-    const errors = invalidLines.map(line => { return { url: line, error: 'Not a valid TRA receipt URL' } })
-    for (let i = 0; i < validURLs.length; i++) {
+    for (let i = 0; i < allLines.length; i++) {
+        let url = allLines[i]
         try {
-            results.push({ url: validURLs[i], data: extractTRAData(await getHTML(validURLs[i])) })
-            console.log(`${i + 1} of ${validURLs.length}:\tExtracted data for ${validURLs[i]} ...`)
+            if (url.startsWith('-')) {
+                url = url.slice(1)
+                throw 'Line is not a valid TRA receipt URL'
+            }
+            results.push({ url, data: extractTRAData(await getHTML(url)) })
+            console.log(`${i + 1} of ${allLines.length}:\tExtracted data for '${url}'.`)
         } catch (err) {
-            if (typeof err === 'string') errors.push({ url: validURLs[i], error: err })
-            else errors.push({ url: validURLs[i], error: err })
-            console.error(`${i + 1} of ${validURLs.length}:\tFailed to extract data for ${validURLs[i]} ...`)
+            results.push({ url, data: typeof err === 'string' ? err : JSON.stringify(err) })
+            console.error(`${i + 1} of ${allLines.length}:\tERROR: Failed to extract data for '${url}': ${typeof err === 'string' ? err : JSON.stringify(err, null, '\t')}.`)
         }
     }
-    // Prepare and save results and errors
+    // Prepare and save results
+    let errCount = 0
     let finalResults = []
     finalResults.push(`COMPANY,VRN,RECEIPT,DATE,TOTAL`)
     finalResults = finalResults.concat(results.map(result => {
-        return `${result.data.name},${result.data.vrn},${result.data.recNo},${result.data.recDate},${result.data.total}`
+        if (typeof result.data === 'string') {
+            errCount++
+            return `"ERROR: ${result.url}: ${result.data}",,,,`
+        } else
+            return `${result.data.name},${result.data.vrn},${result.data.recNo},${result.data.recDate},${result.data.total}`
     }))
     finalResults = finalResults.join('\n')
-    const finalErrors = errors.map(error => {
-        return `Error for '${error.url}':\n${typeof error.error === 'string' ? error.error : JSON.stringify(error.error)}\n`
-    }).join('\n')
     const fileName = basename(file)
     if (finalResults.length > 0) {
         fs.writeFileSync(`${folder}/Results-${fileName}.csv`, finalResults)
-        console.log(`Saved ${results.length} valid results into ${folder}/Results-${fileName}.`)
-    }
-    if (finalErrors.length > 0) {
-        fs.writeFileSync(`${folder}/Errors-${fileName}`, finalErrors)
-        console.log(`Saved ${errors.length} error details into ${folder}/Errors-${fileName}.`)
+        console.log(`Saved results into ${folder}/Results-${fileName}.`)
+        if (errCount > 0) {
+            console.log(`There were ${errCount} errors, so Results-${fileName}.csv will contain error messages on the appropriate row(s).`)
+        }
     }
 }
 

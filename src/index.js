@@ -53,10 +53,18 @@ let extractionProcess = null
 
 const runExtraction = (file, folder) => {
   return new Promise((resolve, reject) => {
-    extractionProcess = fork(extract, [file, folder], { stdio: ['pipe', 'pipe', 'pipe', 'ipc'] }).on('exit', (code, signal) => {
+    const extractionProcess = fork(extract, [file, folder], { stdio: ['pipe', 'pipe', 'pipe', 'ipc'] })
+    
+    extractionProcess.on('exit', (code, signal) => {
       if (code === 0) resolve()
       else reject()
-    }).stdout?.on('data', (data) => {
+    })
+    
+    extractionProcess.stdout?.on('data', (data) => {
+      mainWindow.webContents.send('fromMain', { type: 'LOG', data: data.toString().slice(0, -1) })
+    })
+    
+    extractionProcess.stderr?.on('data', (data) => {
       mainWindow.webContents.send('fromMain', { type: 'LOG', data: data.toString().slice(0, -1) })
     })
   })

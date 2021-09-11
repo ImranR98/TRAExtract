@@ -1,6 +1,6 @@
 {
   "name": "tra-extract",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Extract TRA receipt information from a list of URLs",
   "main": "src/index.js",
   "scripts": {
