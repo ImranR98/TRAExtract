@@ -105,7 +105,7 @@ const extract = async (file, folder) => {
     const fileName = basename(file)
     if (finalResults.length > 0) {
         fs.writeFileSync(`${folder}/Results-${fileName}.csv`, finalResults)
-        console.log(`Saved results into ${folder}/Results-${fileName}.`)
+        console.log(`Saved results into ${folder}/Results-${fileName}.csv`)
         if (errCount > 0) {
             console.log(`There were ${errCount} errors, so Results-${fileName}.csv will contain error messages on the appropriate row(s).`)
         }
