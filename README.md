@@ -4,8 +4,6 @@ Extract TRA receipt information from a list of URLs of the form 'https://verify.
 
 Use the [TRAScan](https://github.com/ImranR98/TRAScan) mobile app to scan receipt QR codes and generate the list of URLs.
 
-> Made for Papa.
-
 
 
 ## Usage
